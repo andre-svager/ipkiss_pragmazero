@@ -2,8 +2,8 @@ package com.ebanx.account;
 
 import com.ebanx.account.domain.Account;
 import com.ebanx.account.domain.BankOperation;
-import com.ebanx.account.application.service.AccountService;
 import com.ebanx.account.domain.EventType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 @SpringBootTest
 class EbanxApplicationTests {
 
-	@Autowired
-	private AccountService service;
+	/*@Autowired
+	private AccountService service;*/
 
 	@Test
 	void contextLoads() {
@@ -36,8 +36,9 @@ class EbanxApplicationTests {
 
 	 @Test
 	 void shouldGetBalanceForNonExitingAccount(){
-		 Account account = new Account(999, new BigDecimal("100"));
-		service.getAccount(account.getAccountId());
+		Account account = new Account(999);
+		//service.getAccount(account.getId());
+		 //Assertions.assertEquals();
 		// return 404 0
 	  }
 
@@ -54,9 +55,10 @@ class EbanxApplicationTests {
 
 	@Test
 	void shouldCreateAccountWithInitialBalance(){
-		Account account = new Account(999, BigDecimal.ZERO);
+		Account account = new Account(100);
 		BankOperation operation = new BankOperation(EventType.DEPOSIT, account, new BigDecimal("10"));
-		operation.calculateBalanceAfterEvent(new BigDecimal("10"));
+		operation.calculateBalance();
+		Assertions.assertEquals(new BigDecimal("10"), account.getBalance());
 	}
 
 

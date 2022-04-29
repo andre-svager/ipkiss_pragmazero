@@ -26,12 +26,15 @@ public class BankOperation {
     public Account getAccount(){
         return this.origin;
     }
+    public Account getDestination(){
+        return this.destination;
+    }
 
-    public void calculateBalanceAfterEvent(BigDecimal money) {
+    public void calculateBalance() {
         switch (this.type){
-            case DEPOSIT -> this.origin.deposit(money);
-            case TRANSFER -> transfer(money);
-            case WITHDRAW -> this.origin.withdraw(money);
+            case DEPOSIT -> this.origin.deposit(this.amount);
+            case TRANSFER -> transfer(this.amount);
+            case WITHDRAW -> this.origin.withdraw(this.amount);
         }
     }
 

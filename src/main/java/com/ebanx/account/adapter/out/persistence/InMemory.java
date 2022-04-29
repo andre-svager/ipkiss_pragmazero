@@ -6,10 +6,8 @@ import com.ebanx.account.domain.Account;
 import com.ebanx.account.domain.BankOperation;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,39 +17,42 @@ public class InMemory {
 
     @Repository
     public class AccountDAO implements AccountRepository {
+        @Override
         public void save(Account account) {
-            account.setAccountId(generatePlanetId());
-            events.put(account, new ArrayList());
+            if(!events.containsKey(account)) {
+                events.put(account, new ArrayList());
+            }
         }
 
+        @Override
         public Optional<Account> findById(int id) {
             return events.keySet()
                                   .stream()
-                                  .filter(account -> account.getAccountId() == id)
+                                  .filter(account -> account.getId() == id)
                                   .findFirst();
         }
 
-        private int generatePlanetId() {
-            return events.size()+1;
+        @Override
+        public boolean reset() {
+            events = new HashMap<Account,List<BankOperation>>();
+            return true;
         }
     }
 
     @Repository
     public class EventDAO implements EventRepository {
 
+        @Override
         public void save(BankOperation event) {
             events.get(event.getAccount()).add(event);
         }
 
+        @Override
         public List<BankOperation> getAllEvents(int accountId) {
             return events.entrySet().stream()
                          .flatMap(entry -> entry.getValue()
-                                                .stream().filter(ev -> ev.getAccount().getAccountId() == accountId))
+                                                .stream().filter(ev -> ev.getAccount().getId() == accountId))
                          .collect(Collectors.toList());
-        }
-
-        public Integer nextSequence(Integer id) {
-            return id ++;
         }
     }
 }
