@@ -2,23 +2,32 @@
 
 ### Reference Documentation
 
-
-
-O desenvolvimento desta soluçao foi baseado em principios de arquitetura hexagonal.
-Para nao aumentar a complexidade da soluçao, foi dividia a estrutura do projeto nas layers, a saber:
+O desenvolvimento desta soluçao foi baseado em alguns principios de arquitetura hexagonal.
+Para nao aumentar a complexidade da soluçao, foi criada estrutura unica de eventos, 
+e alguns agregadores para logica mais complexada:
 
 `1` - Adapter
 - in : Adaptador Web HTTP : Request/Response (Spring RestController)
   - Objetos de suporte / serializacao / Conversores em Objetos de Dominio
   - Chama o Use Case (application.service)
   - Adapters para conversao entre objetos web/dominio 
+- out : 
+  - Implementacao da persistencia (em memoria)
+  - Objetos web de HTTP Response (Serialization)
 
 `2` - Application
 - port:
-  - in: Port para conneccao dos Adapter e utilizacao na Service Layer
-- service:  
+  - out: Port para conneccao com Adapters de saida (database)
+- service:
+  - Implementacao da classe de servico e realizacao do Use Case (DomainEventService)
 
-`3` -  Domain
+`3` - Domain 
+   - Classes de Dominio da logica da aplicacao, regras de negocio
+   - aggregate
+     - Classes contendo agregacao de objetos complexos e criacao de objetos orientados `a DDD
+
+O diagrama abaixo representa em nivel macro a composicao de pacotes. 
+Para nao ficar dificil o entendimento, alguns relacionamentos foram suprimidos
 
 ```mermaid
 %%{init: {'theme': 'dark' } }%%
@@ -36,6 +45,7 @@ graph TD
       IMR(InMemory)
     end 
     end
+    
     subgraph domain
       ES(EventService)
       IBE(InsufficientBalanceException)
@@ -46,6 +56,7 @@ graph TD
       EV(Event)
     end
     end
+    
     subgraph application
     subgraph port.out
       AR(ApplicationRepository)
@@ -56,9 +67,9 @@ graph TD
     end
     end
     
-    DAS --> ES
-    EC --> DAS
-    IMR --> AR 
-    DAS --> IBE
     DAS --> AR
+    DAS --> ES
+    EC ---> ES
+    IMR --> AR 
+    
 ```
