@@ -3,11 +3,8 @@ package com.ebanx.account.application.service;
 import com.ebanx.account.application.port.out.EventRepository;
 import com.ebanx.account.domain.Account;
 import com.ebanx.account.application.port.out.AccountRepository;
-import com.ebanx.account.domain.BankOperation;
+import com.ebanx.account.domain.aggregate.BankOperation;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Component
 public class DomainEventService implements EventService{
@@ -23,22 +20,29 @@ public class DomainEventService implements EventService{
 
     @Override
     public BankOperation createOperation(BankOperation operation) {
-        accountRepository.findById( operation.getAccount().getId())
-                         .ifPresent(acc -> updateOriginAndDestiny(operation, acc.getBalance()));
+
+        updateAccountBalance(operation.getDestination().getId(), operation.getDestination());
+
+        if(operation.getOrigin() != null){
+            updateAccountBalance(operation.getOrigin().getId(), operation.getOrigin());
+        }
 
         operation.calculateBalance();
-        accountRepository.save(operation.getAccount());
+        accountRepository.save(operation.getDestination()   );
         eventRepository.save(operation);
         return operation;
     }
 
-    private void updateOriginAndDestiny(BankOperation operation, BigDecimal balance) {
-        operation.getAccount().updateBalance(balance);
+    private void updateAccountBalance(Integer operation, Account account) {
+        accountRepository
+                .findById(operation)
+                .ifPresent( acc -> account.updateCurrentBalanceWithPreviousValue(acc.getBalance()));
     }
 
     @Override
-    public Optional<Account> getAccount(Integer accountId) {
-        return accountRepository.findById(accountId);
+    public Account getAccount(Integer accountId) {
+        return accountRepository.findById(accountId)
+                                    .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
