@@ -2,6 +2,7 @@ package com.ebanx.account.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Account {
 
@@ -51,6 +52,16 @@ public class Account {
         if(availableBalance(money)){
             this.balance = this.balance.subtract(money);
         }
+    }
+
+    public void updateBalance(BigDecimal money) {
+        this.balance = money;
+    }
+
+    public void negateBalance(BigDecimal money) {
+        Optional.ofNullable(this.balance.compareTo(money) > 0)
+                .orElseThrow(BalanceOutOfRangeException::new);
+        this.balance = money.negate();
     }
 
     private boolean availableBalance(BigDecimal money) {

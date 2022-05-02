@@ -1,7 +1,7 @@
 package com.ebanx.account.adapter.in.web;
 
 import com.ebanx.account.domain.Account;
-import com.ebanx.account.domain.aggregate.BankOperation;
+import com.ebanx.account.domain.aggregate.Event;
 import com.ebanx.account.domain.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,12 +24,10 @@ public class EventRequest {
         this.destination = destination;
     }
 
-    public BankOperation convertRequestToObject(){
-        Account accountOrigin = this.origin == 0 ? null : new Account(this.origin);
-
-        return new BankOperation( EventType.valueOf(this.type.trim().toUpperCase()),
-                                  accountOrigin,
-                                  new Account(this.destination),
-                                  this.amount);
+    public Event convertRequestToObject(){
+        return new Event(EventType.valueOf(this.type.trim().toUpperCase()),
+                         this.origin == 0 ? null : new Account(this.origin),
+                         new Account(this.destination),
+                         this.amount);
     }
 }

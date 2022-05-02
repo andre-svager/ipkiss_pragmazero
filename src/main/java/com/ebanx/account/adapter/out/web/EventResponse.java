@@ -1,7 +1,7 @@
 package com.ebanx.account.adapter.out.web;
 
 import com.ebanx.account.domain.Account;
-import com.ebanx.account.domain.aggregate.BankOperation;
+import com.ebanx.account.domain.aggregate.Event;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,7 +12,7 @@ public class EventResponse {
     @JsonProperty(required = false)
     private Account destination;
 
-    public EventResponse(BankOperation operation) {
+    public EventResponse(Event operation) {
         this.origin = operation.getOrigin();
         if(operation.getDestination() !=null){
             this.destination = operation.getDestination();

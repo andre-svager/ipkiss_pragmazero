@@ -1,11 +1,10 @@
 package com.ebanx.account;
 
 import com.ebanx.account.domain.Account;
-import com.ebanx.account.domain.BankOperation;
 import com.ebanx.account.domain.EventType;
+import com.ebanx.account.domain.aggregate.Event;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -56,7 +55,7 @@ class EbanxApplicationTests {
 	@Test
 	void shouldCreateAccountWithInitialBalance(){
 		Account account = new Account(100);
-		BankOperation operation = new BankOperation(EventType.DEPOSIT, account, new BigDecimal("10"));
+		Event operation = new Event(EventType.DEPOSIT, null, account, new BigDecimal("10"));
 		operation.calculateBalance();
 		Assertions.assertEquals(new BigDecimal("10"), account.getBalance());
 	}

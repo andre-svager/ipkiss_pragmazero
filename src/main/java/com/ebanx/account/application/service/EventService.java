@@ -1,11 +1,11 @@
 package com.ebanx.account.application.service;
 
 import com.ebanx.account.domain.Account;
-import com.ebanx.account.domain.aggregate.BankOperation;
+import com.ebanx.account.domain.aggregate.Event;
 
 public interface EventService {
 
-    BankOperation createOperation(BankOperation operation);
+    Event createEvent(Event operation);
 
     Account getAccount(Integer accountId);
 

@@ -1,48 +1,46 @@
 package com.ebanx.account.application.service;
 
-import com.ebanx.account.application.port.out.EventRepository;
 import com.ebanx.account.domain.Account;
 import com.ebanx.account.application.port.out.AccountRepository;
-import com.ebanx.account.domain.aggregate.BankOperation;
+import com.ebanx.account.domain.aggregate.Event;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 @Component
 public class DomainEventService implements EventService{
 
     private final AccountRepository accountRepository;
-    private final EventRepository eventRepository;
 
-    public DomainEventService( AccountRepository accountRepository,
-                               EventRepository eventRepository) {
+    public DomainEventService( AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-        this.eventRepository = eventRepository;
     }
 
     @Override
-    public BankOperation createOperation(BankOperation operation) {
+    public Event createEvent(Event event) {
 
-        updateAccountBalance(operation.getDestination().getId(), operation.getDestination());
+        BigDecimal destinationBalance =
+                accountRepository.getTotalBalanceByAccount(event.getDestination().getId());
 
-        if(operation.getOrigin() != null){
-            updateAccountBalance(operation.getOrigin().getId(), operation.getOrigin());
-        }
+        BigDecimal originBalance =
+                Optional.ofNullable(event.getOrigin()).isPresent() ?
+                        accountRepository.getTotalBalanceByAccount(event.getOrigin().getId()) : BigDecimal.ZERO;
 
-        operation.calculateBalance();
-        accountRepository.save(operation.getDestination()   );
-        eventRepository.save(operation);
-        return operation;
-    }
+        event.applyEventToAccountOperations( destinationBalance, originBalance);
 
-    private void updateAccountBalance(Integer operation, Account account) {
-        accountRepository
-                .findById(operation)
-                .ifPresent( acc -> account.updateCurrentBalanceWithPreviousValue(acc.getBalance()));
+        Optional.ofNullable(event.getDestination()).ifPresent(dest -> accountRepository.save(dest));
+        Optional.ofNullable(event.getOrigin()).ifPresent(origin -> accountRepository.save(origin));
+
+        event.updateAccountBalance(destinationBalance, originBalance);
+        return event;
     }
 
     @Override
     public Account getAccount(Integer accountId) {
-        return accountRepository.findById(accountId)
-                                    .orElseThrow(ResourceNotFoundException::new);
+        return new Account( accountRepository.findById(accountId)
+                                             .orElseThrow(ResourceNotFoundException::new),
+                            accountRepository.getTotalBalanceByAccount(accountId));
     }
 
     @Override

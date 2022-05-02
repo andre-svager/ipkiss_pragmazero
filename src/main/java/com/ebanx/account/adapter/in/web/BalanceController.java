@@ -12,7 +12,7 @@ import javax.websocket.server.PathParam;
 @RestController
 @RequestMapping("/balance")
 public class BalanceController {
-
+/*
     @Autowired
     private AccountService accountService;
 
@@ -21,6 +21,6 @@ public class BalanceController {
         //ResponseEntity.badRequest();
 
         return ResponseEntity.ok(accountService.getAccount(accountId));
-    }
+    }*/
 
 }

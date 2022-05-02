@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -26,14 +25,14 @@ public class EventController {
 
     private final EventService eventService;
 
-    @GetMapping
-    public ResponseEntity<String> health(){
-        return ResponseEntity.ok("health");
-    }
-
     @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health(){
+        return ResponseEntity.ok("health");
     }
 
     @PostMapping("/reset")
@@ -41,7 +40,6 @@ public class EventController {
         try {
             return ResponseEntity.ok(eventService.reset()? "OK":"0" );
         } catch (Exception e){
-            System.out.println(e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "0");
         }
     }
@@ -49,7 +47,8 @@ public class EventController {
     @GetMapping("/balance")
     public ResponseEntity<BigDecimal> getAccount(@RequestParam("account_id") Integer accountId){
         try {
-            return ResponseEntity.ok(eventService.getAccount(accountId).getBalance());
+            Account a = eventService.getAccount(accountId);
+            return Optional.ofNullable(a).isPresent() ? ResponseEntity.ok( a.getBalance( )) : null;
         }catch(ResourceNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"",e);
         }
@@ -57,8 +56,12 @@ public class EventController {
 
     @PostMapping("/event")
     public ResponseEntity<EventResponse> createEvent(@RequestBody EventRequest req){
-        return new ResponseEntity<EventResponse>(
-                new EventResponse( eventService.createOperation( req.convertRequestToObject() ) ),
-                                                                 HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<EventResponse>(
+                    new EventResponse(eventService.createEvent(req.convertRequestToObject())),
+                    HttpStatus.CREATED);
+        }catch(ResourceNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 }
