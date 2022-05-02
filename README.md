@@ -48,7 +48,7 @@ graph TD
     
     subgraph domain
       ES(EventService)
-      IBE(InsufficientBalanceException)
+      IBE((InsufficientBalanceException))
       EVT(EventType)
     
     subgraph agregate
@@ -63,7 +63,7 @@ graph TD
     end
     subgraph service
       DAS(DomainAccountService)
-      RNF(ResourceNotFoundException)
+      RNF((ResourceNotFoundException))
     end
     end
     
