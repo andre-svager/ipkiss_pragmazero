@@ -8,10 +8,6 @@ public class Account {
     private Integer id;
     private BigDecimal balance;
 
-    public Account(){
-
-    }
-
     public Account(Integer accountId) {
         this.id = accountId;
         this.balance = BigDecimal.ZERO;
@@ -39,19 +35,15 @@ public class Account {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public BigDecimal getBalance() {
         return balance;
     }
 
-    public void deposit(BigDecimal money) {
-        updateBalance(money);
+    public void updateCurrentBalanceWithPreviousValue(BigDecimal currentBalance){
+        this.balance = this.balance.add(currentBalance);
     }
 
-    public void updateBalance(BigDecimal money){
+    public void deposit(BigDecimal money) {
         this.balance = this.balance.add(money);
     }
 
