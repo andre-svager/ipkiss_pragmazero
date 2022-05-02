@@ -1,8 +1,8 @@
 package com.ebanx.account.domain;
 
-public class BalanceOutOfRangeException extends RuntimeException {
+public class InsufficientBalanceException extends RuntimeException {
 
-    public BalanceOutOfRangeException(){
+    public InsufficientBalanceException(){
         super("", new Throwable("0"), true,false);
     }
 

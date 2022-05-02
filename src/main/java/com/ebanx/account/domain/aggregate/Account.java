@@ -1,4 +1,6 @@
-package com.ebanx.account.domain;
+package com.ebanx.account.domain.aggregate;
+
+import com.ebanx.account.domain.InsufficientBalanceException;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -60,7 +62,7 @@ public class Account {
 
     public void negateBalance(BigDecimal money) {
         Optional.ofNullable(this.balance.compareTo(money) > 0)
-                .orElseThrow(BalanceOutOfRangeException::new);
+                .orElseThrow(InsufficientBalanceException::new);
         this.balance = money.negate();
     }
 

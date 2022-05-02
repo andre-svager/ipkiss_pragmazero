@@ -1,6 +1,6 @@
 package com.ebanx.account;
 
-import com.ebanx.account.domain.Account;
+import com.ebanx.account.domain.aggregate.Account;
 import com.ebanx.account.domain.EventType;
 import com.ebanx.account.domain.aggregate.Event;
 import org.junit.jupiter.api.Assertions;
@@ -56,7 +56,7 @@ class EbanxApplicationTests {
 	void shouldCreateAccountWithInitialBalance(){
 		Account account = new Account(100);
 		Event operation = new Event(EventType.DEPOSIT, null, account, new BigDecimal("10"));
-		operation.calculateBalance();
+	//	operation.applyEventToAccountOperations(100, 200);
 		Assertions.assertEquals(new BigDecimal("10"), account.getBalance());
 	}
 

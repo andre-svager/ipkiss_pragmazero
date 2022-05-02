@@ -1,6 +1,6 @@
 package com.ebanx.account.adapter.in.web;
 
-import com.ebanx.account.domain.Account;
+import com.ebanx.account.domain.aggregate.Account;
 import com.ebanx.account.domain.aggregate.Event;
 import com.ebanx.account.domain.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;

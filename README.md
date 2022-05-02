@@ -11,9 +11,7 @@ Para nao aumentar a complexidade da soluçao, foi dividia a estrutura do projeto
 - in : Adaptador Web HTTP : Request/Response (Spring RestController)
   - Objetos de suporte / serializacao / Conversores em Objetos de Dominio
   - Chama o Use Case (application.service)
-
-Adapters para conversao entre objetos web em objetos de dominio 
-Service
+  - Adapters para conversao entre objetos web/dominio 
 
 `2` - Application
 - port:
@@ -22,35 +20,45 @@ Service
 
 `3` -  Domain
 
-
 ```mermaid
 %%{init: {'theme': 'dark' } }%%
 graph TD
     subgraph adapter
     subgraph in.web
       EC[EventContoller]
-      BC[BalanceContoller]
       ER((EventRequest))
     end
     subgraph out.web
       ERS((EventResponse))
+      ARS((AccountResponse))
     end
     subgraph out.persistence
       IMR(InMemory)
     end 
     end
     subgraph domain
-    AS(AccountService)
-    subgraph '
-        DAS(DomainAccountService)
-        AC(Account)
-        EV(Event)
+      ES(EventService)
+      IBE(InsufficientBalanceException)
+      EVT(EventType)
+    
+    subgraph agregate
+      AC(Account)
+      EV(Event)
+    end
+    end
+    subgraph application
+    subgraph port.out
+      AR(ApplicationRepository)
+    end
+    subgraph service
+      DAS(DomainAccountService)
+      RNF(ResourceNotFoundException)
+    end
     end
     
-    end
-    
-    DAS --> AS
+    DAS --> ES
     EC --> DAS
-    BC --> DAS
-    
+    IMR --> AR 
+    DAS --> IBE
+    DAS --> AR
 ```

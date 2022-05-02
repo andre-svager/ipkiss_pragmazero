@@ -1,6 +1,6 @@
-package com.ebanx.account.application.service;
+package com.ebanx.account.domain;
 
-import com.ebanx.account.domain.Account;
+import com.ebanx.account.domain.aggregate.Account;
 import com.ebanx.account.domain.aggregate.Event;
 
 public interface EventService {

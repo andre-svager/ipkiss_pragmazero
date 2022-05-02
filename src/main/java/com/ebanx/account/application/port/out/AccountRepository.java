@@ -1,6 +1,6 @@
 package com.ebanx.account.application.port.out;
 
-import com.ebanx.account.domain.Account;
+import com.ebanx.account.domain.aggregate.Account;
 
 import java.math.BigDecimal;
 import java.util.Optional;

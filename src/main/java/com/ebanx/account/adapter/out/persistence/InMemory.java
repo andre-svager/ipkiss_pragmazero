@@ -1,7 +1,7 @@
 package com.ebanx.account.adapter.out.persistence;
 
 import com.ebanx.account.application.port.out.AccountRepository;
-import com.ebanx.account.domain.Account;
+import com.ebanx.account.domain.aggregate.Account;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,9 @@
 package com.ebanx.account.adapter.in.web;
 
 import com.ebanx.account.adapter.out.web.EventResponse;
-import com.ebanx.account.application.service.EventService;
+import com.ebanx.account.domain.EventService;
 import com.ebanx.account.application.service.ResourceNotFoundException;
-import com.ebanx.account.domain.Account;
+import com.ebanx.account.domain.aggregate.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

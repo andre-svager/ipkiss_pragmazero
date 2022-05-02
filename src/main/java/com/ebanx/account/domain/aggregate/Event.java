@@ -1,8 +1,7 @@
 package com.ebanx.account.domain.aggregate;
 
-import com.ebanx.account.domain.BalanceOutOfRangeException;
+import com.ebanx.account.domain.InsufficientBalanceException;
 import com.ebanx.account.application.service.ResourceNotFoundException;
-import com.ebanx.account.domain.Account;
 import com.ebanx.account.domain.EventType;
 
 import java.math.BigDecimal;
@@ -48,7 +47,7 @@ public class Event {
 
         Optional.ofNullable(origin.subtract(amount)
                                   .compareTo(BigDecimal.ZERO) >= 0)
-                .orElseThrow(BalanceOutOfRangeException::new);
+                .orElseThrow(InsufficientBalanceException::new);
         this.origin.negateBalance(this.amount);
         this.destination.updateBalance(this.amount);
     }
