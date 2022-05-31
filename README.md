@@ -74,33 +74,4 @@ graph TD
     
 ```
 
-## Notes 
-
-Diferenças de formataçao no teste resultou em falso negativo, 
-como comprovado abaixo.
-Tentei resolver com algumas configuraçoes, com prettify json.
-
-```
-❌ Create account with initial balance
-POST /event {"type":"deposit", "destination":"100", "amount":10}
-Expected: 201 {"destination": {"id":"100", "balance":10}}
-Got:      201 {"destination":{"id":100,"balance":10}}
-
-```
-
-Somente nao atendi a formataçao response body quando ocorre exceçao.
-Tentei algumas abordagens menos impactantes, como pode ser visto no application.properties
-Utilizei o ResponseStatusException. Sera necessario utilizar outro Exception Handler para atender.
-
-Segue o esperado, e o resultado obtido:
-
-````
-
-❌ Withdraw from non-existing account
-POST /event {"type":"withdraw", "origin":"200", "amount":10}
-Expected: 404 0
-Got:      404 {"timestamp":"2022-05-02T14:39:50.219+00:00","status":404,"error":"Not Found","path":"/event"}
-
-
-```
 
